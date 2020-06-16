@@ -15,8 +15,7 @@ val listener: (Track) -> Unit) :
 RecyclerView.Adapter<TrackListAdapter.TrackHolder>() {
 
     fun selectTrack(position: Int): Track {
-        val selectedTrack = tracks.find { it.id == position + 1 }
-        return selectedTrack!!
+        return tracks[position]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackHolder {

@@ -1,7 +1,11 @@
 package com.application.dive
 
-data class Track(val id: Int,
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Track(val id: Long,
                  val trackName: String,
                  val artistName: String,
-                 val trackDuration: String) {
+                 val trackDuration: String) : Parcelable {
 }

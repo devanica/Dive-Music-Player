@@ -17,7 +17,7 @@ class PermissionRequest : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission_request)
-        checkForPermission()
+        //checkForPermission()
 
         allowAccessToStorage.setOnClickListener {
             checkForPermission()
@@ -38,14 +38,13 @@ class PermissionRequest : AppCompatActivity() {
                         startActivity(intent)
                     }
                     if (report.isAnyPermissionPermanentlyDenied()) {
-
+                        //TODO: Handle what happens if user denies permissions
                     }
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
                     permissions: List<PermissionRequest?>?,
-                    token: PermissionToken
-                ) {
+                    token: PermissionToken) {
                     token.continuePermissionRequest()
                 }
             })

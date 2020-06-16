@@ -29,25 +29,24 @@ class MainActivity : AppCompatActivity() {
         rv_tracks.setAdapter(trackListAdapter)
     }
 
-    // Get tracks from storage
+    // Get tracks from internal storage
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun getTracksFromStorage() {
         tracks = ArrayList<Track>()
-        val contentResolver =
-            Objects.requireNonNull(applicationContext)
-                .contentResolver
+        val contentResolver = applicationContext.contentResolver
         val cursor = contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null,
             MediaStore.Audio.Media.IS_MUSIC, null,
-            MediaStore.Audio.Media.DEFAULT_SORT_ORDER
-        )
+            MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
+
         var trackName: String?
         var artistName: String?
         var trackDuration: String
-        var trackId: Int
+        var trackId: Long
+
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                trackId = cursor.getInt(cursor.
+                trackId = cursor.getLong(cursor.
                 getColumnIndex(MediaStore.Audio.Media._ID))
                 trackName = cursor.getString(cursor.
                 getColumnIndex(MediaStore.Audio.Media.TITLE))

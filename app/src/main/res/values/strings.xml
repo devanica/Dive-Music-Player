@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Dive</string>
+
+    <string name="question">To use Dive you need to allow access and modification of internal storage.</string>
+    <string name="allow_access_to_storage">Allow access to storage?</string>
 </resources>
