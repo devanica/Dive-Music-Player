@@ -1,6 +1,8 @@
 package com.application.dive
 
-import android.app.PendingIntent
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.ContentUris
 import android.content.Context
@@ -8,6 +10,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.MediaPlayer.OnPreparedListener
+import android.os.Build
 import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
@@ -22,7 +25,6 @@ class MediaPlayerService : Service(),
                            MediaPlayer.OnErrorListener {
 
     private lateinit var track: Track
-    private lateinit var notificationManagerCompat: NotificationManagerCompat
 
     companion object {
         lateinit var player: MediaPlayer
@@ -30,8 +32,7 @@ class MediaPlayerService : Service(),
 
     override fun onCreate() {
         super.onCreate()
-        notificationManagerCompat =
-            NotificationManagerCompat.from(this)
+        createNotificationChannel()
 
         player = MediaPlayer()
         player.setOnPreparedListener(this)
@@ -42,32 +43,21 @@ class MediaPlayerService : Service(),
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         track = intent.getParcelableExtra("track")
         playTrack(track.id, applicationContext)
-        triggerNotificationChannelOne(track)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Dive")
+            .setContentText(track.trackName)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val notification: Notification = builder.build()
+        startForeground(notificationId, notification)
 
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun triggerNotificationChannelOne(track: Track?) {
-        val intent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-        val broadcastIntent = Intent(this, NotificationReceiver::class.java)
-        broadcastIntent.putExtra("track", track)
-        val closeIntent =
-            PendingIntent.getBroadcast(this, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val notification =
-            NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
-                .setContentTitle("Dive")
-                .setContentText(track!!.trackName)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setContentIntent(pendingIntent)
-                .addAction(R.drawable.ic_launcher_foreground, "stop", closeIntent)
-                .build()
-        notificationManagerCompat.notify(1, notification)
+    override fun onCompletion(mediaPlayer: MediaPlayer) {
+
     }
 
-    override fun onCompletion(mediaPlayer: MediaPlayer) {}
     override fun onError(mediaPlayer: MediaPlayer, i: Int, i1: Int): Boolean {
         return false
     }
@@ -75,12 +65,6 @@ class MediaPlayerService : Service(),
     override fun onPrepared(mediaPlayer: MediaPlayer) {
         player.start()
         Log.v("player", "start")
-    }
-
-    override fun onDestroy() {
-        // Unregister since the activity is about to be closed.
-        // LocalBroadcastManager.getInstance(this).unregisterReceiver(onTrackSelect);
-        super.onDestroy()
     }
 
     fun playTrack(l: Long, context: Context?) {
@@ -103,7 +87,31 @@ class MediaPlayerService : Service(),
         }
     }
 
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_LOW
+
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
     override fun onBind(intent: Intent): IBinder? {
         return null
+    }
+
+    override fun onDestroy() {
+        // Unregister since the activity is about to be closed.
+        // LocalBroadcastManager.getInstance(this).unregisterReceiver(onTrackSelect);
+        super.onDestroy()
     }
 }

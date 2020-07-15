@@ -3,4 +3,7 @@
 
     <string name="question">To use Dive you need to allow access and modification of internal storage.</string>
     <string name="allow_access_to_storage">Allow access to storage?</string>
+
+    <string name="channel_name">media player channel</string>
+    <string name="channel_description">no description</string>
 </resources>

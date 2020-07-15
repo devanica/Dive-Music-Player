@@ -17,11 +17,7 @@ class PermissionRequest : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission_request)
-        //checkForPermission()
-
-        allowAccessToStorage.setOnClickListener {
-            checkForPermission()
-        }
+        checkForPermission()
     }
 
     private fun checkForPermission() {
@@ -50,11 +46,6 @@ class PermissionRequest : AppCompatActivity() {
             })
             .onSameThread()
             .check()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkForPermission()
     }
 }
 

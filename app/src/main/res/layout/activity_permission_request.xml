@@ -7,29 +7,4 @@
     android:background="@android:color/black"
     tools:context=".PermissionRequest">
 
-    <TextView
-        android:id="@+id/question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginEnd="50dp"
-        android:layout_marginStart="20dp"
-        android:text="@string/question"
-        android:textColor="@android:color/white"
-        android:textAlignment="center"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/allowAccessToStorage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:padding="20dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/allow_access_to_storage"
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
-
 </RelativeLayout>
